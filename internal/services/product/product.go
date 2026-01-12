@@ -1,4 +1,4 @@
-package models
+package product
 
 var allProducts = []Product{
 	{Title: "one"},
