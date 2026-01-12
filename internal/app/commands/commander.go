@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"log"
+
 	"github.com/DNA-Z/bot/internal/services/product"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -17,5 +19,28 @@ func NewCommander(
 	return &Commander{
 		bot:            bot,
 		productService: productService,
+	}
+}
+
+func (c *Commander) HandleUpdate(update tgbotapi.Update) {
+	defer func() {
+		if panicValue := recover(); panicValue != nil {
+			log.Printf("Recovered from panic: %v", panicValue)
+		}
+	}()
+
+	if update.Message != nil {
+		msg := update.Message
+
+		switch msg.Command() {
+		case "help":
+			c.Help(msg)
+		case "list":
+			c.List(msg)
+		case "get":
+			c.Get(msg)
+		default:
+			c.Default(msg)
+		}
 	}
 }
